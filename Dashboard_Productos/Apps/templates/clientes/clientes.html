@@ -1,0 +1,189 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+<title>{% block title %}Clientes{% endblock %}</title>
+
+{% block clientes %}
+<body class="dark:bg-gray-900">
+    <div class="py-4">
+        <!-- Vista Principal de Clientes -->
+        <div class="container mx-auto px-4">
+            <!-- Breadcrumb -->
+            <nav class="flex mb-6" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                    <li class="inline-flex items-center">
+                        <a href="/home" class="text-gray-50 hover:text-primary text-sm font-medium">
+                            <i class="fas fa-home mr-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li aria-current="page" class="flex items-center">
+                        <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                        <a href="/clientes" class="flex items-center">
+                            <span class="text-primary font-medium text-sm hover:dark:text-white">Clientes</span>
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Título y barra de herramientas -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 md:mb-0">Gestión de Clientes</h1>
+                
+                <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
+                    <!-- Buscador -->
+                    <div class="relative">
+                        <form id="form_busqueda_cliente" action="{% url 'busqueda_cliente' %}">
+                            
+                            <div class="flex">
+                                <input id="dato" name="search" type="text" class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-300 rounded-l-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white dark:placeholder-gray-400" placeholder="Buscar cliente...">
+                                <button type="submit" class="bg-primary hover:bg-blue-600 text-white font-medium px-4 rounded-r-lg flex items-center justify-center ml-0">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Botón Registrar Cliente -->
+                    <button id="openClientForm" class="bg-primary hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Registrar Cliente
+                    </button>
+                </div>
+            </div>
+
+            
+            <!-- Tabla de Clientes -->
+            <div class="bg-white shadow dark:bg-gray-800  rounded-lg overflow-hidden">
+                <div class="overflow-x-auto ">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-8 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+                                    ID
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider">
+                                    Nombre
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-50 uppercase tracking-wider hidden sm:table-cell">
+                                    Teléfono
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-50 uppercase tracking-wider">
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                            {% for cliente in clientes %}
+                            <!-- Clientes -->
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex-shrink-0 h-10 w-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+                                        {{ cliente.id }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">{{ cliente.nombre }} {{ cliente.apellido }}</div>
+                                            <div class="text-sm text-gray-500"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+                                    <div class="text-sm text-gray-900 dark:text-white">{{ cliente.telefono }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button 
+                                        class="text-primary hover:text-blue-700 mr-3"
+                                        onclick="EditaElCliente(this, '{{ cliente.id }}','{{ cliente.nombre }}', '{{ cliente.apellido }}', '{{ cliente.telefono }}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-danger hover:text-red-700"
+                                        onclick="EliminarElCliente(this, '{{ cliente.id }}','{{ cliente.nombre }}', '{{ cliente.apellido }}', '{{ cliente.telefono }}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% include 'paginaciones/paginacion_clientes.html' %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario de Cliente (Modal) -->
+    <div id="clientFormModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl w-8/9 md:w-2/3 lg:w-1/4 max-w-2xl max-h-screen overflow-y-auto">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-800" id="form-title">Registrar Nuevo Cliente</h3>
+            </div>
+            
+            <form id="formcliente" method="post" class="px-6 py-4" action="{% url 'crear_cliente' %}">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Ej: Carlos">
+                        <p class="mt-1 text-xs text-danger">Este campo es requerido</p>
+                    </div>
+                    <div>
+                        <label for="apellido" class="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+                        <input type="text" id="apellido" name="apellido" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Ej: Moreno">
+                        <p class="mt-1 text-xs text-danger">Este campo es requerido</p>
+                    </div>
+                </div>
+          
+
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
+                    <div>
+                        <label for="telefono" class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                        <div class="flex space-x-0.5">
+                            <select id="prefijo" class="px-4 origin-top-right outline-1 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-medium hover:bg-gray-100">
+                                <option class="hover:bg-gray-100 font-medium" value="0412">0412</option>
+                                <option class="hover:bg-gray-100 font-medium" value="0414">0414</option>
+                                <option class="hover:bg-gray-100 font-medium" value="0416">0416</option>
+                                <option class="hover:bg-gray-100 font-medium" value="0424">0424</option>
+                                <option class="hover:bg-gray-100 font-medium" value="0426">0426</option>
+                              </div>
+                            </select>
+                            <input type="number" id="numero" min="0"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="5551234">
+                        </div>
+                        <input type="hidden" id="telefono" name="telefono">
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-3 border-t border-gray-200 pt-4">
+                    <button type="button" id="cancelForm" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                        Cancelar
+                    </button>
+                    <button class="px-4 py-2 text-white bg-primary rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Guardar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+{% if messages %}
+{% for message in messages %}
+    <script>
+        if ( '{{ message.tags }}' == 'error' ) {
+        mensajeDatosIncorrectos('{{ message }}');
+        } else {
+        mensajeSucces('{{ message }}');
+        };
+    </script>
+{% endfor %}
+{% endif %}
+
+    <script src="{% static 'js/accionesClientes.js' %}"></script>
+
+{% endblock %}
+</body>
