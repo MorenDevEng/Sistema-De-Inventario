@@ -14,4 +14,10 @@ echo "--- 4. Recolectando archivos estáticos (Collectstatic) ---"
 # Esto toma el output.css generado y lo mete en la carpeta 'staticfiles' para WhiteNoise
 python3.11 manage.py collectstatic --noinput --clear
 
+#!/bin/bash
+# ... (todos los comandos anteriores: pip install, npm install, tailwind, collectstatic)
+
+# Aseguramos que la carpeta de salida exista para Vercel
+mkdir -p staticfiles
+
 echo "--- ¡PROCESO FINALIZADO EXITOSAMENTE! ---"
