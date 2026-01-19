@@ -26,7 +26,13 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG') == 'True'
+# settings.py
+
+DEBUG_VAR = os.getenv('DEBUG')
+if DEBUG_VAR is None:
+    raise ValueError("¡ERROR: La variable DEBUG no está llegando a Vercel!")
+else:
+    print(f"--- La variable DEBUG es: {DEBUG_VAR} ---")
 
 ALLOWED_HOSTS = [
     'localhost',
