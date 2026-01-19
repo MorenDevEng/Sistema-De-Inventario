@@ -29,14 +29,14 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'sistema-de-inventario-five.vercel.app',
+    'sistema-de-inventario-one.vercel.app',
     '.vercel.app'
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://sistema-de-inventario-five.vercel.app',
+    'https://sistema-de-inventario-one.vercel.app',
 ]
 
 # Application definition
