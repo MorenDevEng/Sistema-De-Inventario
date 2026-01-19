@@ -1,16 +1,17 @@
 #!/bin/bash
 
-echo "--- INSTALANDO PYTHON DEPENDENCIES ---"
+echo "--- 1. Instalando dependencias de Python ---"
 python3.11 -m pip install -r requirements.txt
 
-echo "--- INSTALANDO NODE DEPENDENCIES ---"
-# Esto busca tu package.json y descarga Tailwind
+echo "--- 2. Instalando dependencias de Node (Tailwind) ---"
 npm install
 
-echo "--- COMPILANDO TAILWIND ---"
-# Usamos la ruta de tu package.json: ../Apps/static/css/
-# Pero como el script corre desde la raíz, ajustamos:
+echo "--- 3. Compilando Tailwind CSS ---"
+# Esto crea el archivo output.css basándose en el input.css
 npx tailwindcss -i ./Apps/static/css/input.css -o ./Apps/static/css/output.css --minify
 
-echo "--- EJECUTANDO COLLECTSTATIC ---"
+echo "--- 4. Recolectando archivos estáticos (Collectstatic) ---"
+# Esto toma el output.css generado y lo mete en la carpeta 'staticfiles' para WhiteNoise
 python3.11 manage.py collectstatic --noinput --clear
+
+echo "--- ¡PROCESO FINALIZADO EXITOSAMENTE! ---"
