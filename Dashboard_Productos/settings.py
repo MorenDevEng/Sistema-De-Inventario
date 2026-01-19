@@ -30,7 +30,7 @@ DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = [
     '*',
-    'sistema-de-inventario-one.vercel.app',
+    'https://sistema-de-inventario-one.vercel.app/',
     '.vercel.app'
 ]
 
