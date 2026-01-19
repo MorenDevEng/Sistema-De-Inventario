@@ -94,7 +94,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Dashboard_Productos.wsgi.application'
+WSGI_APPLICATION = 'Dashboard_Productos.wsgi.app'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
