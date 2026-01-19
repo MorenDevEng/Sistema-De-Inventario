@@ -1,12 +1,18 @@
 {
-    "builds": [{
-        "src": "Dashboard_Productos/wsgi.py",
-        "use": "@vercel/python"
-    }],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "Dashboard_Productos/wsgi.py"
-        }
-    ]
+  "builds": [
+    {
+      "src": "Dashboard_Productos/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "Dashboard_Productos/wsgi.py"
+    }
+  ]
 }
