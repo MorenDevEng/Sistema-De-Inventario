@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 
 BASE_DIR = Path(__file__).resolve().parent
-print(BASE_DIR)
+
 ubicacion_json = os.path.join(BASE_DIR, 'dolar_bcv.json')
 
 encabezados = {
