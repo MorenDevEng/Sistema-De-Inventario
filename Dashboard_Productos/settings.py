@@ -29,9 +29,10 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = [
-    '*',
-    'sistema-de-inventario-one.vercel.app',
-    '.vercel.app'
+    'localhost',
+    '127.0.0.1',
+    'sistema-de-inventario-one.vercel.app',  # Tu dominio principal
+    '.vercel.app',                          # Wildcard para todos los subdominios de Vercel
 ]
 
 CSRF_TRUSTED_ORIGINS = [
