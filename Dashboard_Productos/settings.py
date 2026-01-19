@@ -26,14 +26,14 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = [
     'sistema-de-inventario-one.vercel.app',
     '.vercel.app'
 ]
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 CSRF_TRUSTED_ORIGINS = [
     'https://sistema-de-inventario-one.vercel.app',
@@ -87,7 +87,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Dashboard_Productos.wsgi.application'
+WSGI_APPLICATION = 'Dashboard_Productos.wsgi.app'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
