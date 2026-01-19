@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_ENV = Path(__file__).resolve().parent.parent
 # Cargar el archivo .env
-load_dotenv(BASE_ENV / '.env')
+load_dotenv()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -27,6 +27,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
+
+print(DEBUG)
 
 ALLOWED_HOSTS = ['*']
 
@@ -47,7 +49,6 @@ INSTALLED_APPS = [
     'Apps.templatetags',
     'Apps.ventas',
     'Apps.abonos',
-
 
 ]
 
@@ -144,4 +145,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+STORAGES = {
+    # ...
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
