@@ -31,12 +31,12 @@ DEBUG = os.getenv('DEBUG') == 'True'
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'sistema-de-inventario-one.vercel.app',  # Tu dominio principal
+    'sistema-de-inventario-lilac.vercel.app',  # Tu dominio principal
     '.vercel.app',                          # Wildcard para todos los subdominios de Vercel
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://sistema-de-inventario-one.vercel.app',
+    'https://sistema-de-inventario-lilac.vercel.app',
     'https://*.vercel.app' # Recomendado para subdominios de rama
 ]
 
