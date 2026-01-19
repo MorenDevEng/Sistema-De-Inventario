@@ -26,7 +26,7 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = [
     'sistema-de-inventario-five.vercel.app',
@@ -87,7 +87,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Dashboard_Productos.wsgi.app'
+WSGI_APPLICATION = 'Dashboard_Productos.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -150,7 +150,7 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_STORAGES = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
