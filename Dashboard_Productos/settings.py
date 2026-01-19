@@ -37,12 +37,12 @@ else:
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'sistema-de-inventario-lilac.vercel.app',  # Tu dominio principal
+    'sistema-de-inventario-neon.vercel.app',  # Tu dominio principal
     '.vercel.app',                          # Wildcard para todos los subdominios de Vercel
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://sistema-de-inventario-lilac.vercel.app',
+    'https://sistema-de-inventario-neon.vercel.app',
     'https://*.vercel.app' # Recomendado para subdominios de rama
 ]
 
