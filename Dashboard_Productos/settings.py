@@ -29,20 +29,16 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # settings.py
 
 DEBUG = os.getenv('DEBUG')
-if DEBUG is None:
-    raise ValueError("¡ERROR: La variable DEBUG no está llegando a Vercel!")
-else:
-    print(f"--- La variable DEBUG es: {DEBUG} ---")
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'sistema-de-inventario-neon.vercel.app',  # Tu dominio principal
+    'sistema-de-inventario-chi.vercel.app',  # Tu dominio principal
     '.vercel.app',                          # Wildcard para todos los subdominios de Vercel
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://sistema-de-inventario-neon.vercel.app',
+    'https://sistema-de-inventario-chi.vercel.app',
     'https://*.vercel.app' # Recomendado para subdominios de rama
 ]
 
@@ -153,7 +149,7 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'Apps/static')]
 
 STORAGES = {
     "staticfiles": {
