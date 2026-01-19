@@ -29,11 +29,10 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = [
+    '*',
     'sistema-de-inventario-one.vercel.app',
     '.vercel.app'
 ]
-
-
 
 CSRF_TRUSTED_ORIGINS = [
     'https://sistema-de-inventario-one.vercel.app',
