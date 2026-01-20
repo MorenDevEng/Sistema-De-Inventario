@@ -1,15 +1,15 @@
 #!/bin/bash
 
 echo "--- 1. Instalando dependencias de Python ---"
-# En Vercel Build, usamos python3
-python3.12 -m pip install -r requirements.txt
+# Usamos --break-system-packages para permitir la instalación en el entorno de Vercel
+python3.12 -m pip install -r requirements.txt --break-system-packages
 
-echo "--- 4. Recolectando archivos estáticos (Collectstatic) ---"
-# Cambiamos a python3
+echo "--- 3. Collectstatic ---"
+# Aquí ejecutamos el comando que fallaba
 python3.12 manage.py collectstatic --noinput --clear
 
-# ESTA LÍNEA ES LA QUE CORRIGE EL ERROR DE VERCEL
 echo "--- 4. Verificando carpeta de salida ---"
+# Forzamos la creación por si acaso
 mkdir -p staticfiles
 
 echo "--- ¡PROCESO FINALIZADO EXITOSAMENTE! ---"
