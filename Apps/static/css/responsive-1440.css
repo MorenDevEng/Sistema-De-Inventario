@@ -1,0 +1,94 @@
+/* ============================================
+   Adaptaciones específicas para pantalla 1440x900
+   Solo se aplica cuando el ancho de pantalla es 1440px exactos
+   ============================================ */
+
+/* UNICA-adaptacion para 1440px exactly */
+@media screen and (min-width: 1440px) and (max-width: 1440px) and (min-height: 900px) and (max-height: 900px) {
+
+    /* ===== LAYOUT PRINCIPAL ===== */
+    
+    /* Reducir sidebar */
+    #logo-sidebar {
+        width: 220px !important;
+    }
+    
+    .sm\:ml-64 {
+        margin-left: 220px !important;
+    }
+    
+    /* Reducir padding del main content */
+    .p-7 {
+        padding: 1rem !important;
+    }
+    
+    /* ===== TABLAS ===== */
+    
+    /* Aumentar padding vertical en celdas para mejor separación */
+    table td,
+    table th {
+        padding: 0.75rem 0.75rem !important;
+    }
+    
+    /* Reducir tamano de avatares */
+    .flex-shrink-0.h-10.w-10,
+    .flex-shrink-0.h-10,
+    .h-10.w-10 {
+        height: 2rem !important;
+        width: 2rem !important;
+        font-size: 0.75rem !important;
+    }
+    
+    /* ===== MODALES ===== */
+    
+    /* Modales de clientes y productos */
+    #clientFormModal > div,
+    #ProductFormModal > div {
+        max-width: 30% !important;
+        max-height: 85vh !important;
+    }
+    
+    /* Modales de ventas y pagos */
+    #VentaFormModal > div,
+    #PagoParcialModal > div {
+        max-width: 45% !important;
+        max-height: 85vh !important;
+    }
+    
+    /* Dropdowns en modales */
+    .w-64 {
+        width: 100% !important;
+        max-width: 200px !important;
+    }
+    
+    /* Grid del modal de pagos - menos espacio */
+    .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* ===== PAGINACION ===== */
+    
+    /* Reducir padding en paginacion */
+    .px-4.py-3 {
+        padding: 0.5rem 1rem !important;
+    }
+    
+    /*===== VENTAS - hacer visible columnas ocultas =====*/
+    .hidden.md\:table-cell {
+        display: table-cell !important;
+    }
+    
+    /*===== PAGOS - hacer visible columnas ocultas =====*/
+    .hidden.md\:table-cell.pagos\! {
+        display: table-cell !important;
+    }
+    
+    /* ===== TOOLTIPS ===== */
+    .max-w-xs {
+        max-width: 12rem !important;
+    }
+}
+
+/* ===== PARA PANTALLAS MAYORES A 1440px - MANTENER DISENO ACTUAL ===== */
+/* No se requieren cambios, el CSS existente funciona bien */
