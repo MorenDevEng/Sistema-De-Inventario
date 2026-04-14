@@ -28,13 +28,9 @@ def verificador_de_datos(request, cliente_id, productos, cantidades):
     return True
 
 def valor_a_pagar(productos, cantidad):
-    valor = []
-    for producto in productos:
-        prod = Producto.objects.get(id=producto)
-        valor.append(prod.precio_dolar)
-
-    valores_productos = [a * b for a, b in zip(valor, cantidad)]
-
+    productos_obj = Producto.objects.filter(id__in=productos)
+    precios = {p.id: p.precio_dolar for p in productos_obj}
+    valores_productos = [precios[int(p)] * c for p, c in zip(productos, cantidad)]
     return sum(valores_productos)
 
 # Create your views here.
@@ -44,12 +40,11 @@ def lista_ventas(request):
 
     valor = valor_obtenido()
 
-    clientes = Cliente.objects.all().order_by('nombre')  # Llamo a todos los clientes por orden de nombre
-    detalles = DetalleVenta.objects.all()  # Llamo a todos los detalles de venta
-    ventas = Venta.objects.all().order_by('-fecha_venta')  # Llamo a todas las ventas por orden de fecha
+    clientes = Cliente.objects.only('id', 'nombre', 'apellido', 'telefono').order_by('nombre')
+    ventas = Venta.objects.select_related('cliente').prefetch_related('detalles__producto').order_by('-fecha_venta')
+    productos = Producto.objects.only('id', 'nombre_producto', 'precio_dolar', 'cantidad').order_by('nombre_producto')
     page = request.GET.get('page', 1)
     
-    productos = Producto.objects.all().order_by('nombre_producto')  # Llamo a todos los productos por orden de nombre
     try:
         paginator = Paginator(ventas, 20)
         ventas = paginator.get_page(page)
@@ -61,7 +56,6 @@ def lista_ventas(request):
         'clientes': clientes, 
         'ventas': ventas, 
         'productos': productos, 
-        'detalles': detalles, 
         'dolar_bcv':valor})
 
 @login_required(login_url='/')
@@ -204,10 +198,9 @@ def busqueda_venta(request):
     """Vista para realizar busqueda de una venta"""
 
     dato = request.GET.get('dato')
-    ventas = Venta.objects.all().order_by('-fecha_venta')           # Ordeno las ventas por ultima compra realizada
-    clientes = Cliente.objects.all().order_by('nombre')             # Ordeno los clientes por orden alfabetico
-    productos = Producto.objects.all().order_by('nombre_producto')  # Ordeno los productos por orden alfabetico
-    detalles = DetalleVenta.objects.all()
+    ventas = Venta.objects.select_related('cliente').prefetch_related('detalles__producto').order_by('-fecha_venta')
+    clientes = Cliente.objects.only('id', 'nombre', 'apellido').order_by('nombre')
+    productos = Producto.objects.only('id', 'nombre_producto', 'precio_dolar', 'cantidad').order_by('nombre_producto')
 
     if dato:
         
@@ -237,17 +230,14 @@ def busqueda_venta(request):
         return redirect('ventas')
       
     if not ventas:
-        # Si no encuentra en la base de datos regresa con el mensaje de error
         messages.error(request, 'No se encontro una venta con los datos ingresados')
         return redirect('ventas')
     
     else:
-        # Si consigue un elemento en la base de datos regresa solo con el valor
         valor = valor_obtenido()
         return render(request, 'ventas/busqueda_venta.html', {
             'ventas':ventas,
             'clientes':clientes,
             'productos':productos,
-            'detalles':detalles,
             'dolar_bcv':valor
             })

@@ -37,9 +37,9 @@ def verificar_datos(request, cliente, ventas, porcentaje_seleccionado, monto, ch
 def listado_pagos(request):
     """Lista todos los pagos registrados"""
 
-    pagos = Pagos.objects.all().order_by('-fecha')
-    ventas = Venta.objects.all()
-    detalles = DetalleVenta.objects.all()
+    pagos = Pagos.objects.select_related('cliente').prefetch_related('pago_unico__venta__cliente').order_by('-fecha')
+    ventas = Venta.objects.select_related('cliente').filter(estado__in=['PARCIAL_50', 'PENDIENTE']).order_by('-fecha_venta')
+    detalles = DetalleVenta.objects.select_related('producto').all()
 
     ESTADOS_DEUDA=['PARCIAL_50',
                 'PENDIENTE']
@@ -62,7 +62,13 @@ def listado_pagos(request):
     except:
         raise Http404 
 
-    return render(request, 'pagos/pagos.html', {'ventas':ventas, 'clientes_deudores':clientes_deudores, 'detalles':detalles, 'dolar_bcv':valor, 'pagos':pagos})
+    return render(request, 'pagos/pagos.html', {
+        'ventas':ventas, 
+        'detalles':detalles,
+        'clientes_deudores':clientes_deudores, 
+        'dolar_bcv':valor, 
+        'pagos':pagos
+    })
 
 @login_required(login_url='/')
 def crear_pago(request):
@@ -194,9 +200,9 @@ def busqueda_de_pago(request):
 
     dato = request.GET.get('dato')
 
-    pagos = Pagos.objects.all().order_by('-fecha')
-    ventas = Venta.objects.all()
-    detalles = DetalleVenta.objects.all()
+    pagos = Pagos.objects.select_related('cliente').prefetch_related('pago_unico__venta').order_by('-fecha')
+    ventas = Venta.objects.select_related('cliente').filter(estado__in=['PARCIAL_50', 'PENDIENTE']).order_by('-fecha_venta')
+    detalles = DetalleVenta.objects.select_related('producto').all()
 
     ESTADOS_DEUDA=['PARCIAL_50',
                 'PENDIENTE']
@@ -242,8 +248,8 @@ def busqueda_de_pago(request):
     valor = valor_obtenido()
     return render(request, 'pagos/busqueda_pago.html', {
         'ventas':ventas, 
+        'detalles':detalles,
         'clientes_deudores':clientes_deudores, 
-        'detalles':detalles, 
         'dolar_bcv':valor, 
         'pagos':pagos
-        })
+    })
