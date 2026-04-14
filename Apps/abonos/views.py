@@ -97,20 +97,13 @@ def registrar_abono(request):
 
     if datos_verificados == True:
         
-        # Transforma el valor a flotante para su manipulacion 
         monto_dolar = float(monto_dolar)
         monto = float(monto)
-        # Una vez verificado los datos, solicita informacion en la base de datos
-        # Esto no ocurrira si ocurre un error en la verificacion
 
-        ventas = (
-            Venta.objects
-            .filter(id__in=ventas_ids, cliente_id=cliente_id)
-        )
+        ventas = Venta.objects.select_related('cliente').filter(id__in=ventas_ids, cliente_id=cliente_id)
 
         if checkbox_pago_total == 'true':
 
-            # Crear el pago
             pago = Pagos(
                 cliente_id=cliente_id,
                 monto_total=monto,
@@ -120,29 +113,26 @@ def registrar_abono(request):
             )
             pago.save()
 
-            # Aplicar el pago a las ventas
+            pagos_ventas = []
+            ids_ventas = []
             for venta in ventas:
-
-                pago_venta = PagoVenta(
+                pagos_ventas.append(PagoVenta(
                     pago=pago,
                     venta=venta,
                     monto_aplicado=venta.total_pagar
-                )
-                
-                pago_venta.save()
-
-                venta.estado = 'PAGADO'
-                venta.save()
-
+                ))
+                ids_ventas.append(venta.id)
                 pago.body += f' #{venta.id}'
-                pago.save()
+            
+            PagoVenta.objects.bulk_create(pagos_ventas)
+            Venta.objects.filter(id__in=ids_ventas).update(estado='PAGADO')
+            pago.save()
                 
             messages.success(request, 'Pago registrado correctamente')
             return
                 
         else:
 
-            # Crear el pago
             pago = Pagos(
                 cliente_id=cliente_id,
                 monto_total=monto,
@@ -152,44 +142,42 @@ def registrar_abono(request):
             
             pago.save()
 
-            # Aplicar el pago a las ventas
+            porc_multi = {'50': 0.5, '100': 1}
+            monto_pagar = monto_dolar * porc_multi[porc_pagos]
+
+            pagos_ventas = []
+            ids_ventas_parcial = []
+            ids_ventas_pagado = []
+            nuevos_totales = {}
+
             for venta in ventas:
-
-                porc_multi = {
-                    '50':0.5,
-                    '100':1
-                }
-
-                monto_pagar = monto_dolar * porc_multi[porc_pagos]
                 monto_restante = float(venta.total_pagar) - monto_pagar
-
-                pago_venta = PagoVenta(
+                pagos_ventas.append(PagoVenta(
                     pago=pago,
                     venta=venta,
                     monto_aplicado=monto
-                )
-                pago_venta.save()
-
+                ))
                 pago.body += f' #{venta.id}'
-                pago.monto_dolar = monto_pagar
-                pago.save()
                 
-                match porc_pagos:
+                if porc_pagos == '50':
+                    ids_ventas_parcial.append(venta.id)
+                    nuevos_totales[venta.id] = monto_restante
+                elif porc_pagos == '100':
+                    ids_ventas_pagado.append(venta.id)
 
-                    case '50':
-                        venta.estado = 'PARCIAL_50'
-                        venta.total_pagar = monto_restante
-                        venta.save()
-
-                        messages.success(request, 'Pago registrado correctamente')
-                        return
-
-                    case '100':
-                        venta.estado = 'PAGADO'
-                        venta.save()
-
-                        messages.success(request, 'Pago registrado correctamente')
-                        return
+                pago.monto_dolar = monto_pagar
+            
+            PagoVenta.objects.bulk_create(pagos_ventas)
+            
+            if ids_ventas_parcial:
+                for venta_id in ids_ventas_parcial:
+                    Venta.objects.filter(id=venta_id).update(estado='PARCIAL_50', total_pagar=nuevos_totales[venta_id])
+            if ids_ventas_pagado:
+                Venta.objects.filter(id__in=ids_ventas_pagado).update(estado='PAGADO')
+            
+            pago.save()
+            messages.success(request, 'Pago registrado correctamente')
+            return
 
     return
 
