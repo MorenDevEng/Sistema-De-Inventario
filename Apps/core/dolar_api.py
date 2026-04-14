@@ -4,7 +4,9 @@ import os
 from pathlib import Path
 import json
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -13,12 +15,10 @@ ubicacion_json = os.path.join(BASE_DIR, 'dolar_bcv.json')
 encabezados = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
 
-url = 'https://www.bcv.org.ve/'
-
 def obtener_dolar_bcv():
     """Busca el dato con WebScrapping"""
 
-    respuesta = requests.get(url, verify=os.path.join(BASE_DIR, 'bcv.org.ve.crt'), headers=encabezados)
+    respuesta = requests.get(os.getenv('URL_BCV'), verify=os.path.join(BASE_DIR, 'bcv.org.ve.crt'), headers=encabezados)
 
     if respuesta.status_code == 200:
 
