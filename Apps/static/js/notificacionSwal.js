@@ -6,6 +6,7 @@ function mensajeDatosIncorrectos(mensaje) {
     text: mensaje,
     icon: "error",
     confirmButtonText: "Ok!",
+    position: "center",
     });
 };
 
@@ -15,6 +16,7 @@ function mensajeSucces(mensaje) {
     text: mensaje,
     icon: "success",
     confirmButtonText: "Ok!",
+    position: "center",
     });
 };  
 
@@ -44,6 +46,7 @@ function preguntarGuardarCliente(nombre, apellido, telefono, form) {
         cancelButtonText: "Cancelar",
         reverseButtons: true,
         allowOutsideClick: false,
+        position: "center",
     }).then((result) => {
         if (result.isConfirmed) {
             form.submit(); // Envía el formulario después de la confirmación
@@ -72,6 +75,7 @@ function preguntarEliminarCliente (id, nombre, apellido, telefono){
         cancelButtonText: "Cancelar",
         reverseButtons: true,
         allowOutsideClick: false,
+        position: "center",
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = `/clientes/eliminarCliente/${id}/`;
@@ -106,12 +110,14 @@ function preguntarGuardarProducto(nombre, cantidad, precio, form) {
         cancelButtonText: "Cancelar",
         reverseButtons: true,
         allowOutsideClick: false,
+        position: "center",
     }).then((result) => {
         if (result.isConfirmed) {
             form.submit(); // Envía el formulario después de la confirmación
         };
     });
 };
+
 
 // SOLICITUD PARA ELIMINAR EL PRODUCTO
 function preguntarEliminarProducto(id, nombre, cantidad, precio){
@@ -138,6 +144,7 @@ function preguntarEliminarProducto(id, nombre, cantidad, precio){
     cancelButtonText: "Cancelar",
     reverseButtons: true,
     allowOutsideClick: false,
+    position: "center",
 
     }).then((result) => {
         if (result.isConfirmed) {
@@ -204,6 +211,7 @@ function preguntarGuardarVenta(cliente, producto, cantidad, precio, form) {
         cancelButtonText: "Cancelar",
         reverseButtons: true,
         allowOutsideClick: false,
+        position: "center",
     }).then((result) => {
         if (result.isConfirmed) {
             form.submit(); // Envía el formulario después de la confirmación
@@ -254,6 +262,7 @@ function preguntarGuardarPago(cliente, ventas, subtotal, monto, dolar, referenci
         cancelButtonText: "Cancelar",
         reverseButtons: true,
         allowOutsideClick: false,
+        position: "center",
     }).then((result) => {
         if (result.isConfirmed) {
             form.submit(); // Envía el formulario después de la confirmación
@@ -309,6 +318,7 @@ function preguntarGuardarPagoConPorcentajes(cliente, venta, porcentaje, total, m
         cancelButtonText: "Cancelar",
         reverseButtons: true,
         allowOutsideClick: false,
+        position: "center",
     }).then((result) => {
         if (result.isConfirmed) {
             form.submit(); // Envía el formulario después de la confirmación
