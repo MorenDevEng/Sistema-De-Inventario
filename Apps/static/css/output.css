@@ -1753,6 +1753,14 @@ video {
   .lg\:w-1\/4 {
     width: 25%;
   }
+
+  .lg\:w-2\/5 {
+    width: 40%;
+  }
+
+  .lg\:w-64 {
+    width: 16rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

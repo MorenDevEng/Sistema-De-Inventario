@@ -4,7 +4,7 @@
    ============================================ */
 
 /* UNICA-adaptacion para 1440px exactly */
-@media screen and (min-width: 1440px) and (max-width: 1440px) and (min-height: 900px) and (max-height: 900px) {
+@media screen and (max-width: 1440px) and (max-height: 900px) {
 
     /* ===== LAYOUT PRINCIPAL ===== */
     
@@ -27,7 +27,7 @@
     /* Aumentar padding vertical en celdas para mejor separación */
     table td,
     table th {
-        padding: 0.75rem 0.75rem !important;
+        padding: 0.95rem 0.95rem !important;
     }
     
     /* Reducir tamano de avatares */
@@ -53,12 +53,6 @@
     #PagoParcialModal > div {
         max-width: 45% !important;
         max-height: 85vh !important;
-    }
-    
-    /* Dropdowns en modales */
-    .w-64 {
-        width: 100% !important;
-        max-width: 200px !important;
     }
     
     /* Grid del modal de pagos - menos espacio */
