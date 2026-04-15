@@ -47,7 +47,7 @@ def debe_actualizar_json(horas):
 def consulta_valor_json():
     """Verifica si ya paso el tiempo y reescribe el JSON de ser necesario"""
 
-    if not debe_actualizar_json(horas=24):
+    if not debe_actualizar_json(horas=1):
         return  # Usa el valor guardado, no consulta la web
 
     data = {
