@@ -70,15 +70,12 @@ def consulta_valor_json():
 
 def valor_obtenido():
     """Busca el valor en el JSON y verifica si debe actualizarse con la funcion consulta"""
-    # try:
-    #     consulta_valor_json()
-    # except Exception:
-    #     pass  
+    try:
+        consulta_valor_json()
+    except Exception:
+        pass  
 
-    # with open(ubicacion_json, 'r', encoding='utf-8') as ar:
-    #     respuesta = json.load(ar)
+    with open(ubicacion_json, 'r', encoding='utf-8') as ar:
+        respuesta = json.load(ar)
 
-    respuesta = obtener_dolar_bcv()
-        
-    return respuesta
-    
+        return respuesta['precio']
