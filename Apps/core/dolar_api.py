@@ -30,7 +30,7 @@ def obtener_dolar_bcv():
         
         return round(dolar_bcv, 2)
 
-def debe_actualizar_json(horas):
+def debe_actualizar_json(minutos):
     """Retorna True si ya pasaron X horas desde la última consulta"""
 
     if not os.path.exists(ubicacion_json):
@@ -42,12 +42,12 @@ def debe_actualizar_json(horas):
     ultima_actualizacion = datetime.fromisoformat(data['fecha'])
     ahora = datetime.now()
     
-    return ahora - ultima_actualizacion >= timedelta(hours=horas)
+    return ahora - ultima_actualizacion >= timedelta(minutes=minutos)
 
 def consulta_valor_json():
     """Verifica si ya paso el tiempo y reescribe el JSON de ser necesario"""
 
-    if not debe_actualizar_json(horas=1):
+    if not debe_actualizar_json(minutos=5):
         return  # Usa el valor guardado, no consulta la web
 
     data = {
