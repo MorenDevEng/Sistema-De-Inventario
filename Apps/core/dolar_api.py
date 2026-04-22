@@ -8,17 +8,37 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BASE_DIR = Path(__file__).resolve().parent
+if os.environ.get('VERCEL'):
+    # En la web Vercel para poder escribir
+    BASE_DIR = Path("/tmp/")
+else:
+    # Entorno local
+    BASE_DIR = Path(__file__).resolve().parent
 
 ubicacion_json = os.path.join(BASE_DIR, 'dolar_bcv.json')
 
 encabezados = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
 
+def crear_ssl():
+    """Funciona para crear el contexto del certificado"""
+
+    if os.environ.get('VERCEL'):
+        # En la web Vercel para poder consultar a BCV
+        contexto = False # Forzamos modo sin verificación
+    else:
+        # Entorno local
+        RUTA_CERT = os.path.join(BASE_DIR, 'bcv.org.ve.crt')
+        contexto = RUTA_CERT
+    
+    return contexto
+
 def obtener_dolar_bcv():
     """Busca el dato con WebScrapping"""
 
-    respuesta = requests.get(os.getenv('URL_BCV'), verify=os.path.join(BASE_DIR, 'bcv.org.ve.crt'), headers=encabezados)
+    ssl_contenido = crear_ssl()
+
+    respuesta = requests.get(os.getenv('URL_BCV'), verify=ssl_contenido, headers=encabezados)
 
     if respuesta.status_code == 200:
 
