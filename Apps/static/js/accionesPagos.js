@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if(ventas.dataset.clienteId === clienteId && ventas.dataset.clienteEstado != 'PAGADO'){
                 ventas.classList.remove('hidden');
                 ventas.closest('div').classList.remove('hidden');
-                ventasTotal += parseFloat(ventas.textContent.trim().slice(18).replace(',','.'));
-                subtotal.push(parseFloat(ventas.textContent.trim().slice(18).replace(',','.')));
+                ventasTotal += parseFloat(ventas.textContent.split("Total:")[1].trim().replace(',','.'));
+                subtotal.push(parseFloat(ventas.textContent.split("Total:")[1].trim().replace(',','.')));
                 ventasIds.push(ventas.dataset.ventaId)
                 
             } else {
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 '100':1
             };
 
-            const totalVenta = parseFloat(labelVenta.textContent.slice(18).replace(',','.'));
+            const totalVenta = parseFloat(labelVenta.textContent.split("Total:")[1].trim().replace(',','.'));
             calculoVenta = ((totalVenta * porcentajeMultiplicar[porselec]) * dolarValor).toFixed(2);
             
             montoDolar.value = totalVenta;
