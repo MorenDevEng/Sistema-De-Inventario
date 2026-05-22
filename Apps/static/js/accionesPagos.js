@@ -122,25 +122,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // ======================================================
 
     const listaProductos = document.getElementById('productosLista');
-    const muestra = document.querySelectorAll('.muestra-productos');
+    const productosData = JSON.parse(document.getElementById('productos-data').textContent);
 
+    function mostrarProductosDeVenta(ventaId) {
+        listaProductos.innerHTML = '';
+        const productos = productosData[ventaId];
+        if (productos && productos.length > 0) {
+            productos.forEach(p => {
+                const span = document.createElement('span');
+                span.className = 'text-sm text-gray-900 dark:text-white';
+                span.textContent = `${p.nombre} (x${p.cantidad}) - $${p.precio}`;
+                listaProductos.appendChild(span);
+            });
+            listaProductos.classList.remove('py-6');
+        } else {
+            listaProductos.innerHTML = '<span class="text-sm text-gray-400">Sin productos registrados</span>';
+            listaProductos.classList.add('py-6');
+        }
+    }
 
     menuVenta.addEventListener('click', (e) => {
         if (labelVenta != 'Seleccione una venta...'){
             const ventaId = document.getElementById('venta_pagar').value;
-            
             if (ventaId) {
-                muestra.forEach( (producto) => {
-                    if(ventaId === producto.dataset.detallesVenta){
-                        producto.classList.remove('hidden')
-                        listaProductos.classList.remove('py-6')
-                    }
-                    else {
-                        producto.classList.add('hidden')
-                    }
-                })
+                mostrarProductosDeVenta(ventaId);
             }
-
         }   
     });
 
@@ -324,10 +330,8 @@ document.addEventListener('DOMContentLoaded', function() {
         subtotal = [];
 
         montoDolar.value = '';
+        listaProductos.innerHTML = '';
         listaProductos.classList.add('py-6');
-        muestra.forEach((producto) => {
-            producto.classList.add('hidden')
-        });
 
         limpiarInputsVentas();
 

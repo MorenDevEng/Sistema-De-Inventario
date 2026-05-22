@@ -38,7 +38,7 @@ def obtener_dolar_bcv():
 
     ssl_contenido = crear_ssl()
 
-    respuesta = requests.get(os.getenv('URL_BCV'), verify=ssl_contenido, headers=encabezados)
+    respuesta = requests.get(os.getenv('URL_BCV'), verify=ssl_contenido, headers=encabezados, timeout=3)
 
     if respuesta.status_code == 200:
 

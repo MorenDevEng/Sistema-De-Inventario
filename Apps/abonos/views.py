@@ -1,12 +1,13 @@
+import json
 from django.shortcuts import render, redirect
 from Apps.clientes.models import Cliente
 from Apps.ventas.models import Venta, DetalleVenta
-from Apps.inventario.models import Producto
 from Apps.abonos.models import Pagos, PagoVenta
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from django.db.models import Prefetch
 from Apps.core.dolar_api import valor_obtenido
 
 
@@ -37,9 +38,7 @@ def verificar_datos(request, cliente, ventas, porcentaje_seleccionado, monto, ch
 def listado_pagos(request):
     """Lista todos los pagos registrados"""
 
-    pagos = Pagos.objects.select_related('cliente').prefetch_related('pago_unico__venta__cliente').order_by('-fecha')
-    ventas = Venta.objects.select_related('cliente').filter(estado__in=['PARCIAL_50', 'PENDIENTE']).order_by('-fecha_venta')
-    detalles = DetalleVenta.objects.select_related('producto').all()
+    pagos = Pagos.objects.select_related('cliente').prefetch_related('pago_unico__venta').order_by('-fecha')
 
     ESTADOS_DEUDA=['PARCIAL_50',
                 'PENDIENTE']
@@ -50,6 +49,24 @@ def listado_pagos(request):
         .distinct()
         .order_by('nombre')
     )
+
+    ventas = (
+        Venta.objects.select_related('cliente')
+        .prefetch_related(Prefetch('detalles', queryset=DetalleVenta.objects.select_related('producto')))
+        .filter(estado__in=ESTADOS_DEUDA)
+        .order_by('-fecha_venta')[:50]
+    )
+
+    productos_por_venta = {}
+    for venta in ventas:
+        productos_por_venta[venta.id] = [
+            {
+                'nombre': d.producto.nombre_producto,
+                'cantidad': d.cantidad,
+                'precio': float(d.precio_unitario)
+            }
+            for d in venta.detalles.all()
+        ]
 
     valor = valor_obtenido()
 
@@ -63,8 +80,8 @@ def listado_pagos(request):
         raise Http404 
 
     return render(request, 'pagos/pagos.html', {
-        'ventas':ventas, 
-        'detalles':detalles,
+        'ventas':ventas,
+        'productos_json': json.dumps(productos_por_venta),
         'clientes_deudores':clientes_deudores, 
         'dolar_bcv':valor, 
         'pagos':pagos
@@ -189,8 +206,6 @@ def busqueda_de_pago(request):
     dato = request.GET.get('dato')
 
     pagos = Pagos.objects.select_related('cliente').prefetch_related('pago_unico__venta').order_by('-fecha')
-    ventas = Venta.objects.select_related('cliente').filter(estado__in=['PARCIAL_50', 'PENDIENTE']).order_by('-fecha_venta')
-    detalles = DetalleVenta.objects.select_related('producto').all()
 
     ESTADOS_DEUDA=['PARCIAL_50',
                 'PENDIENTE']
@@ -201,6 +216,24 @@ def busqueda_de_pago(request):
         .distinct()
         .order_by('nombre')
     )
+
+    ventas = (
+        Venta.objects.select_related('cliente')
+        .prefetch_related(Prefetch('detalles', queryset=DetalleVenta.objects.select_related('producto')))
+        .filter(estado__in=ESTADOS_DEUDA)
+        .order_by('-fecha_venta')[:50]
+    )
+
+    productos_por_venta = {}
+    for venta in ventas:
+        productos_por_venta[venta.id] = [
+            {
+                'nombre': d.producto.nombre_producto,
+                'cantidad': d.cantidad,
+                'precio': float(d.precio_unitario)
+            }
+            for d in venta.detalles.all()
+        ]
 
     if dato:
         dato = dato.strip()
@@ -235,8 +268,8 @@ def busqueda_de_pago(request):
 
     valor = valor_obtenido()
     return render(request, 'pagos/busqueda_pago.html', {
-        'ventas':ventas, 
-        'detalles':detalles,
+        'ventas':ventas,
+        'productos_json': json.dumps(productos_por_venta),
         'clientes_deudores':clientes_deudores, 
         'dolar_bcv':valor, 
         'pagos':pagos
